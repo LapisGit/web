@@ -3,192 +3,75 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Countdown — Sep 20, 5:00 PM EST</title>
+  <title>Countdown</title>
   <style>
-    :root{
-      --bg:#000;
-      --fg:#fff;
-      --muted: rgba(255,255,255,0.55);
-      --big: clamp(28px, 8vh, 96px);
-      --small: clamp(12px, 2vh, 20px);
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #000000, #111111, #1a1a1a, #0d0d0d);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    html,body{
-      height:100%;
-      margin:0;
-      background:var(--bg);
-      color:var(--fg);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
-    .wrap{
-      min-height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:24px;
-      box-sizing:border-box;
-      flex-direction:column;
-      gap:24px;
-    }
-    .count {
-      font-weight:700;
-      font-size:var(--big);
-      letter-spacing:-0.02em;
-      line-height:1;
-      text-wrap:balance;
-    }
-    .label {
-      font-weight:500;
-      color:var(--muted);
-      font-size:var(--small);
-    }
-    .units {
-      display:inline-grid;
-      grid-auto-flow:column;
-      gap:18px;
-      align-items:end;
-    }
-    .unit {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:8px;
-      min-width:68px;
-    }
-    .unit .num{
-      font-weight:800;
-      font-size:calc(var(--big) / 2.4);
-    }
-    .small-note{
-      color:var(--muted);
-      font-size:14px;
-      max-width:780px;
-    }
-    .num {
-      transition: transform 220ms cubic-bezier(.2,.9,.3,1), opacity 220ms;
-      display:inline-block;
-      will-change:transform, opacity;
-    }
-    .started{
-      font-size:32px;
-      font-weight:700;
-      letter-spacing:-0.01em;
-    }
-
-    @media (max-width:520px){
-      .units { gap:12px; }
-      .unit { min-width:44px; }
+    #countdown {
+      color: #fff;
+      font-size: clamp(36px, 12vw, 140px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      text-shadow: 0 0 20px rgba(255,255,255,0.1);
     }
   </style>
 </head>
 <body>
-  <div class="wrap" role="main">
-    <div class="label">Countdown to</div>
-    <div class="count">September 20 — 5:00 PM <span class="label" style="font-size:inherit">EST (UTC−05:00)</span></div>
-
-    <div id="countdown" class="units" aria-live="polite" aria-atomic="true">
-      <div class="unit" id="u-days">
-        <div class="num">0</div>
-        <div class="label">Days</div>
-      </div>
-      <div class="unit" id="u-hours">
-        <div class="num">00</div>
-        <div class="label">Hours</div>
-      </div>
-      <div class="unit" id="u-mins">
-        <div class="num">00</div>
-        <div class="label">Minutes</div>
-      </div>
-      <div class="unit" id="u-secs">
-        <div class="num">00</div>
-        <div class="label">Seconds</div>
-      </div>
-    </div>
-
-    <div class="small-note" id="note">
-      meow
-    </div>
-  </div>
+  <div id="countdown">00:00:00:00</div>
 
   <script>
-    const TARGET_MONTH = 9;
+    const TARGET_MONTH = 9; // September (1-based)
     const TARGET_DAY = 20;
-    const TARGET_HOUR_LOCAL_EST = 17;
-    const EST_OFFSET_HOURS = -5;
-    function pad(n, d=2){ return String(n).padStart(d,'0'); }
+    const TARGET_HOUR_LOCAL_EST = 17; // 5 PM EST
+    const EST_OFFSET_HOURS = -5; // fixed UTC-5 (no DST)
 
-    function makeTargetUTC(year){
-      const utcYear = year;
-      const utcMonthIndex = TARGET_MONTH - 1;
-      const utcDay = TARGET_DAY;
+    function makeTargetUTC(year) {
       const utcHour = TARGET_HOUR_LOCAL_EST + Math.abs(EST_OFFSET_HOURS);
-      return Date.UTC(utcYear, utcMonthIndex, utcDay, utcHour, 0, 0);
+      return Date.UTC(year, TARGET_MONTH - 1, TARGET_DAY, utcHour, 0, 0);
     }
 
-    (function runCountdown(){
-      const now = Date.now();
-      const thisYear = new Date().getUTCFullYear();
-      let targetMs = makeTargetUTC(thisYear);
-      if (targetMs <= now) {
-        targetMs = makeTargetUTC(thisYear + 1);
+    const now = Date.now();
+    const thisYear = new Date().getUTCFullYear();
+    let targetMs = makeTargetUTC(thisYear);
+    if (targetMs <= now) targetMs = makeTargetUTC(thisYear + 1);
+
+    const el = document.getElementById("countdown");
+
+    function pad(n, d=2){ return String(n).padStart(d,"0"); }
+
+    function update() {
+      const diff = Math.max(0, targetMs - Date.now());
+      if (diff <= 0) {
+        el.textContent = "00:00:00:00";
+        return;
       }
+      const totalSeconds = Math.floor(diff / 1000);
+      const secs = totalSeconds % 60;
+      const mins = Math.floor(totalSeconds / 60) % 60;
+      const hours = Math.floor(totalSeconds / 3600) % 24;
+      const days = Math.floor(totalSeconds / 86400);
+      el.textContent = `${pad(days)}:${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+    }
 
-      const elDays = document.querySelector('#u-days .num');
-      const elHours = document.querySelector('#u-hours .num');
-      const elMins = document.querySelector('#u-mins .num');
-      const elSecs = document.querySelector('#u-secs .num');
-      const countdownContainer = document.getElementById('countdown');
-      const note = document.getElementById('note');
-
-      let prev = { d:null, h:null, m:null, s:null };
-
-      function updateOnce(){
-        const nowMs = Date.now();
-        let diff = Math.max(0, targetMs - nowMs);
-
-        if (diff === 0) {
-          // reached
-          countdownContainer.innerHTML = '<div class="started">Event started.</div>';
-          note.textContent = 'Target reached.';
-          clearInterval(intervalId);
-          return;
-        }
-
-        const totalSeconds = Math.floor(diff / 1000);
-        const seconds = totalSeconds % 60;
-        const totalMinutes = Math.floor(totalSeconds / 60);
-        const minutes = totalMinutes % 60;
-        const totalHours = Math.floor(totalMinutes / 60);
-        const hours = totalHours % 24;
-        const days = Math.floor(totalHours / 24);
-
-        function setIfChanged(el, key, val, format = v=>v){
-          if (prev[key] !== val){
-            prev[key] = val;
-            // small pop animation
-            el.style.transform = 'translateY(-10%) scale(0.98)';
-            el.style.opacity = '0.6';
-            // set text after tiny delay for smoother feel
-            setTimeout(()=>{
-              el.textContent = format(val);
-              el.style.transform = '';
-              el.style.opacity = '';
-            }, 70);
-          }
-        }
-
-        setIfChanged(elDays, 'd', days, v => v);
-        setIfChanged(elHours, 'h', hours, v => pad(v,2));
-        setIfChanged(elMins, 'm', minutes, v => pad(v,2));
-        setIfChanged(elSecs, 's', seconds, v => pad(v,2));
-
-        countdownContainer.setAttribute('aria-label', `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds remaining`);
-      }
-      updateOnce();
-      const intervalId = setInterval(updateOnce, 250);
-    })();
+    update();
+    setInterval(update, 1000);
   </script>
 </body>
 </html>
