@@ -36,42 +36,42 @@
 <body>
   <div id="countdown">00:00:00:00</div>
 
-  <script>
-    const TARGET_MONTH = 9; // September (1-based)
-    const TARGET_DAY = 20;
-    const TARGET_HOUR_LOCAL_EST = 17; // 5 PM EST
-    const EST_OFFSET_HOURS = -5; // fixed UTC-5 (no DST)
+<script>
+  const TARGET_MONTH = 9;
+  const TARGET_DAY = 20;
+  const TARGET_HOUR_LOCAL_EDT = 17;
+  const EDT_OFFSET_HOURS = -4; // oops now its edt
 
-    function makeTargetUTC(year) {
-      const utcHour = TARGET_HOUR_LOCAL_EST + Math.abs(EST_OFFSET_HOURS);
-      return Date.UTC(year, TARGET_MONTH - 1, TARGET_DAY, utcHour, 0, 0);
+  function makeTargetUTC(year) {
+    const utcHour = TARGET_HOUR_LOCAL_EDT + Math.abs(EDT_OFFSET_HOURS);
+    return Date.UTC(year, TARGET_MONTH - 1, TARGET_DAY, utcHour, 0, 0);
+  }
+
+  const now = Date.now();
+  const thisYear = new Date().getUTCFullYear();
+  let targetMs = makeTargetUTC(thisYear);
+  if (targetMs <= now) targetMs = makeTargetUTC(thisYear + 1);
+
+  const el = document.getElementById("countdown");
+
+  function pad(n, d=2){ return String(n).padStart(d,"0"); }
+
+  function update() {
+    const diff = Math.max(0, targetMs - Date.now());
+    if (diff <= 0) {
+      el.textContent = "00:00:00:00";
+      return;
     }
+    const totalSeconds = Math.floor(diff / 1000);
+    const secs = totalSeconds % 60;
+    const mins = Math.floor(totalSeconds / 60) % 60;
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const days = Math.floor(totalSeconds / 86400);
+    el.textContent = `${pad(days)}:${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+  }
 
-    const now = Date.now();
-    const thisYear = new Date().getUTCFullYear();
-    let targetMs = makeTargetUTC(thisYear);
-    if (targetMs <= now) targetMs = makeTargetUTC(thisYear + 1);
-
-    const el = document.getElementById("countdown");
-
-    function pad(n, d=2){ return String(n).padStart(d,"0"); }
-
-    function update() {
-      const diff = Math.max(0, targetMs - Date.now());
-      if (diff <= 0) {
-        el.textContent = "00:00:00:00";
-        return;
-      }
-      const totalSeconds = Math.floor(diff / 1000);
-      const secs = totalSeconds % 60;
-      const mins = Math.floor(totalSeconds / 60) % 60;
-      const hours = Math.floor(totalSeconds / 3600) % 24;
-      const days = Math.floor(totalSeconds / 86400);
-      el.textContent = `${pad(days)}:${pad(hours)}:${pad(mins)}:${pad(secs)}`;
-    }
-
-    update();
-    setInterval(update, 1000);
-  </script>
+  update();
+  setInterval(update, 1000);
+</script>
 </body>
 </html>
