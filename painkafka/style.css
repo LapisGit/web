@@ -1,0 +1,202 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #F8F8F8;
+    background-image: url(https://f4.bcbits.com/img/0044985987_130.jpg);
+    background-position: left top;
+    background-repeat: repeat;
+    color: #FFFFFF;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#centerWrapper {
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 0 40px 40px;
+}
+
+#customHeader {
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+#customHeader img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.album-card {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 40px;
+    border: 1px solid #333;
+    padding: 20px;
+    background: #0a0a0a;
+}
+
+.album-art img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.album-info h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 4px;
+}
+
+.album-info .year {
+    color: #aaa;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.track-list {
+    margin-bottom: 20px;
+}
+
+.track {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.track-num {
+    width: 28px;
+    color: #aaa;
+    font-size: 12px;
+}
+
+.track-title {
+    flex: 1;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.track-duration {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.buy-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 12px;
+}
+
+.price {
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.buy-link {
+    color: #F5060C;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.buy-link:hover {
+    text-decoration: underline;
+}
+
+#about-section, #contact-section {
+    margin-top: 40px;
+    border: 1px solid #333;
+    padding: 20px;
+    background: #0a0a0a;
+}
+
+#about-section h2, #contact-section h2 {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 12px;
+}
+
+#about-section p {
+    color: #FFFFFF;
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+#about-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#about-section li {
+    color: #FFFFFF;
+    font-size: 14px;
+    padding: 3px 0;
+    line-height: 1.6;
+}
+
+#contact-section a {
+    color: #F5060C;
+    text-decoration: none;
+}
+
+#contact-section a:hover {
+    text-decoration: underline;
+}
+
+#pgFt {
+    margin-top: 60px;
+    text-align: center;
+}
+
+#pgFt p {
+    color: #aaa;
+    font-size: 12px;
+}
+
+.footer-links {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 11px;
+}
+
+.footer-links a:hover {
+    color: #FFFFFF;
+}
+
+.footer-sep {
+    color: #555;
+    font-size: 11px;
+    margin: 0 8px;
+}
+
+@media (max-width: 768px) {
+    #centerWrapper {
+        padding: 20px;
+    }
+    .album-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .album-art img {
+        width: 150px;
+        height: 150px;
+    }
+    .buy-section {
+        justify-content: center;
+    }
+}
