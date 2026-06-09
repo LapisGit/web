@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Countdown</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #000000, #111111, #1a1a1a, #0d0d0d);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    #countdown {
+      color: #fff;
+      font-size: clamp(36px, 12vw, 140px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-align: center;
+      text-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div id="countdown">00:00:00:00</div>
+
+<script>
+  const TARGET_MONTH = 6;
+  const TARGET_DAY = 24;
+  const TARGET_HOUR_LOCAL_EDT = 11;
+  const EDT_OFFSET_HOURS = -4; // oops now its edt
+
+  function makeTargetUTC(year) {
+    const utcHour = TARGET_HOUR_LOCAL_EDT + Math.abs(EDT_OFFSET_HOURS);
+    return Date.UTC(year, TARGET_MONTH - 1, TARGET_DAY, utcHour, 0, 0);
+  }
+
+  const now = Date.now();
+  const thisYear = new Date().getUTCFullYear();
+  let targetMs = makeTargetUTC(thisYear);
+  if (targetMs <= now) targetMs = makeTargetUTC(thisYear + 1);
+
+  const el = document.getElementById("countdown");
+
+  function pad(n, d=2){ return String(n).padStart(d,"0"); }
+
+  function update() {
+    const diff = Math.max(0, targetMs - Date.now());
+    if (diff <= 0) {
+      el.textContent = "00:00:00:00";
+      return;
+    }
+    const totalSeconds = Math.floor(diff / 1000);
+    const secs = totalSeconds % 60;
+    const mins = Math.floor(totalSeconds / 60) % 60;
+    const hours = Math.floor(totalSeconds / 3600) % 24;
+    const days = Math.floor(totalSeconds / 86400);
+    el.textContent = `${pad(days)}:${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+  }
+
+  update();
+  setInterval(update, 1000);
+</script>
+</body>
+</html>
