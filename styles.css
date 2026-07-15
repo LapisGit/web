@@ -33,3 +33,15 @@ img {
 .button:hover {
   background-color: #282828;
 }
+
+.image-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.image-gallery img {
+    max-width: 100%;
+    height: auto;
+}
