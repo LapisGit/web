@@ -45,3 +45,14 @@ img {
     max-width: 100%;
     height: auto;
 }
+
+#content a {
+    color: #66b2ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#content a:hover {
+    color: #99ccff;
+    text-decoration: underline;
+}
